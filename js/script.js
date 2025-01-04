@@ -1,63 +1,88 @@
-// Data-array voor kookdagen en activiteiten
+// Firebase configuratie
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBV0QbK7I_8Gct3PEexjn_8mn-AHPlPjFM",
+    authDomain: "vakantieplanner-8e47e.firebaseapp.com",
+    databaseURL: "https://vakantieplanner-8e47e-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "vakantieplanner-8e47e",
+    storageBucket: "vakantieplanner-8e47e.firebasestorage.app",
+    messagingSenderId: "76259349044",
+    appId: "1:76259349044:web:5316a95a0a1a0b9f0ef061",
+    measurementId: "G-DMHRYB6R26"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
+// Data structuren
 const kookdagen = [
-    { dag: 'Maandag', kok: '' },
-    { dag: 'Dinsdag', kok: '' },
-    { dag: 'Woensdag', kok: '' },
-    { dag: 'Donderdag', kok: '' },
-    { dag: 'Vrijdag', kok: '' },
-    { dag: 'Zaterdag', kok: '' },
-    { dag: 'Zondag', kok: '' }
+    { dag: "Maandag", kok: "" },
+    { dag: "Dinsdag", kok: "" },
+    { dag: "Woensdag", kok: "" },
+    { dag: "Donderdag", kok: "" },
+    { dag: "Vrijdag", kok: "" },
+    { dag: "Zaterdag", kok: "" },
+    { dag: "Zondag", kok: "" },
 ];
-
 const activiteiten = [
-    { dag: 'Maandag', activiteit: '' },
-    { dag: 'Dinsdag', activiteit: '' },
-    { dag: 'Woensdag', activiteit: '' },
-    { dag: 'Donderdag', activiteit: '' },
-    { dag: 'Vrijdag', activiteit: '' },
-    { dag: 'Zaterdag', activiteit: '' },
-    { dag: 'Zondag', activiteit: '' }
+    { dag: "Maandag", activiteit: "" },
+    { dag: "Dinsdag", activiteit: "" },
+    { dag: "Woensdag", activiteit: "" },
+    { dag: "Donderdag", activiteit: "" },
+    { dag: "Vrijdag", activiteit: "" },
+    { dag: "Zaterdag", activiteit: "" },
+    { dag: "Zondag", activiteit: "" },
 ];
 
-// Functie om tabellen te genereren
-function genereerTabel(data, elementId) {
-    const tbody = document.getElementById(elementId);
-    tbody.innerHTML = ''; // Reset de inhoud
+// Elementen updaten
+function updateTabellen() {
+    const kookdagenTabel = document.getElementById("kookdagen-tabel").getElementsByTagName("tbody")[0];
+    const activiteitenTabel = document.getElementById("activiteiten-tabel").getElementsByTagName("tbody")[0];
+    kookdagenTabel.innerHTML = "";
+    activiteitenTabel.innerHTML = "";
 
-    data.forEach((item, index) => {
-        const row = document.createElement('tr');
-        Object.values(item).forEach(value => {
-            const cell = document.createElement('td');
-            cell.textContent = value || 'Nog niet ingevuld';
-            row.appendChild(cell);
-        });
+    kookdagen.forEach((item, index) => {
+        const row = kookdagenTabel.insertRow();
+        row.insertCell(0).innerText = item.dag;
+        row.insertCell(1).innerText = item.kok || "Klik om in te schrijven";
+        row.onclick = () => inschrijven(kookdagen, index, "kookdagen");
+    });
 
-        // Voeg knop toe om in te schrijven
-        const actieCel = document.createElement('td');
-        const knop = document.createElement('button');
-        knop.textContent = 'Inschrijven';
-        knop.addEventListener('click', () => inschrijven(data, index));
-        actieCel.appendChild(knop);
-        row.appendChild(actieCel);
-
-        tbody.appendChild(row);
+    activiteiten.forEach((item, index) => {
+        const row = activiteitenTabel.insertRow();
+        row.insertCell(0).innerText = item.dag;
+        row.insertCell(1).innerText = item.activiteit || "Klik om activiteit toe te voegen";
+        row.onclick = () => inschrijven(activiteiten, index, "activiteiten");
     });
 }
 
-// Functie om inschrijving te verwerken
-function inschrijven(data, index) {
-    const naam = prompt('Vul je naam in:');
-    if (naam) {
-        data[index].kok = naam || data[index].activiteit;
+// Inschrijven functie
+function inschrijven(data, index, type) {
+    const input = prompt(`Voer ${type === "kookdagen" ? "de naam van de kok" : "de activiteit"} in:`);
+    if (input) {
+        data[index][type === "kookdagen" ? "kok" : "activiteit"] = input;
+        set(ref(database, type), data);
         updateTabellen();
     }
 }
 
-// Functie om tabellen te updaten
-function updateTabellen() {
-    genereerTabel(kookdagen, 'kookdagen');
-    genereerTabel(activiteiten, 'activiteitendagen');
-}
+// Firebase lezen en laden
+onValue(ref(database, "kookdagen"), (snapshot) => {
+    if (snapshot.exists()) {
+        kookdagen.splice(0, kookdagen.length, ...snapshot.val());
+        updateTabellen();
+    }
+});
 
-// Initialiseer de tabellen
-updateTabellen();
+onValue(ref(database, "activiteiten"), (snapshot) => {
+    if (snapshot.exists()) {
+        activiteiten.splice(0, activiteiten.length, ...snapshot.val());
+        updateTabellen();
+    }
+});
+
+// Laad tabellen bij opstarten
+window.onload = updateTabellen;
