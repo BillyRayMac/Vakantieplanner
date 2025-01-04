@@ -7,27 +7,31 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Vakantieplanner</h1>
-    <div>
-        <h2>Kookdagen</h2>
-        <table id="kookdagen-tabel">
-            <thead>
-                <tr>
-                    <th>Dag</th>
-                    <th>Kok</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Hier komen de kookdagen -->
-            </tbody>
-        </table>
-    </div>
-    <div>
-        <h2>Activiteiten</h2>
-        <table id="activiteiten-tabel">
-            <thead>
-                <tr>
-                    <th>Dag</th>
+    <header>
+        <h1>Vakantieplanner</h1>
+    </header>
+    <main>
+        <section id="kookrooster">
+            <h2>Kookrooster</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dag</th>
+                        <th>Kok</th>
+                    </tr>
+                </thead>
+                <tbody id="kookdagen">
+                    <!-- Dynamisch gegenereerde rijen -->
+                </tbody>
+            </table>
+        </section>
+        <section id="activiteiten">
+            <h2>Activiteitenplanning</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dag</th>
+
                     <th>Activiteit</th>
                 </tr>
             </thead>
