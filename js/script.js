@@ -1,7 +1,4 @@
 // Firebase configuratie
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js";
-
 const firebaseConfig = {
     apiKey: "AIzaSyBV0QbK7I_8Gct3PEexjn_8mn-AHPlPjFM",
     authDomain: "vakantieplanner-8e47e.firebaseapp.com",
@@ -13,9 +10,9 @@ const firebaseConfig = {
     measurementId: "G-DMHRYB6R26"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+// Firebase initialiseren
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 // Data structuren
 const kookdagen = [
@@ -25,7 +22,7 @@ const kookdagen = [
     { dag: "Donderdag", kok: "" },
     { dag: "Vrijdag", kok: "" },
     { dag: "Zaterdag", kok: "" },
-    { dag: "Zondag", kok: "" },
+    { dag: "Zondag", kok: "" }
 ];
 const activiteiten = [
     { dag: "Maandag", activiteit: "" },
@@ -34,27 +31,33 @@ const activiteiten = [
     { dag: "Donderdag", activiteit: "" },
     { dag: "Vrijdag", activiteit: "" },
     { dag: "Zaterdag", activiteit: "" },
-    { dag: "Zondag", activiteit: "" },
+    { dag: "Zondag", activiteit: "" }
 ];
 
-// Elementen updaten
+// Tabellen updaten
 function updateTabellen() {
     const kookdagenTabel = document.getElementById("kookdagen-tabel").getElementsByTagName("tbody")[0];
     const activiteitenTabel = document.getElementById("activiteiten-tabel").getElementsByTagName("tbody")[0];
-    kookdagenTabel.innerHTML = "";
-    activiteitenTabel.innerHTML = "";
+    kookdagenTabel.innerHTML = ""; // Leeg de tabel
+    activiteitenTabel.innerHTML = ""; // Leeg de tabel
 
+    // Kookdagen invullen
     kookdagen.forEach((item, index) => {
         const row = kookdagenTabel.insertRow();
-        row.insertCell(0).innerText = item.dag;
-        row.insertCell(1).innerText = item.kok || "Klik om in te schrijven";
+        const dagCel = row.insertCell(0);
+        const kokCel = row.insertCell(1);
+        dagCel.innerText = item.dag;
+        kokCel.innerText = item.kok || "Klik om in te schrijven";
         row.onclick = () => inschrijven(kookdagen, index, "kookdagen");
     });
 
+    // Activiteiten invullen
     activiteiten.forEach((item, index) => {
         const row = activiteitenTabel.insertRow();
-        row.insertCell(0).innerText = item.dag;
-        row.insertCell(1).innerText = item.activiteit || "Klik om activiteit toe te voegen";
+        const dagCel = row.insertCell(0);
+        const activiteitCel = row.insertCell(1);
+        dagCel.innerText = item.dag;
+        activiteitCel.innerText = item.activiteit || "Klik om activiteit toe te voegen";
         row.onclick = () => inschrijven(activiteiten, index, "activiteiten");
     });
 }
@@ -64,25 +67,24 @@ function inschrijven(data, index, type) {
     const input = prompt(`Voer ${type === "kookdagen" ? "de naam van de kok" : "de activiteit"} in:`);
     if (input) {
         data[index][type === "kookdagen" ? "kok" : "activiteit"] = input;
-        set(ref(database, type), data);
-        updateTabellen();
+        firebase.database().ref(type).set(data); // Gegevens opslaan in Firebase
+        updateTabellen(); // Tabellen bijwerken
     }
 }
 
-// Firebase lezen en laden
-onValue(ref(database, "kookdagen"), (snapshot) => {
+// Firebase lezen bij opstarten
+firebase.database().ref("kookdagen").on("value", (snapshot) => {
     if (snapshot.exists()) {
         kookdagen.splice(0, kookdagen.length, ...snapshot.val());
         updateTabellen();
     }
 });
-
-onValue(ref(database, "activiteiten"), (snapshot) => {
+firebase.database().ref("activiteiten").on("value", (snapshot) => {
     if (snapshot.exists()) {
         activiteiten.splice(0, activiteiten.length, ...snapshot.val());
         updateTabellen();
     }
 });
 
-// Laad tabellen bij opstarten
+// Start de applicatie
 window.onload = updateTabellen;
