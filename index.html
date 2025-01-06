@@ -1,77 +1,85 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vakantieplanner</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
+  <title>Vakantieplanner</title>
+  <style>
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
+  </style>
 </head>
 <body>
+  <h1>Vakantieplanner</h1>
+  <h2>Kookdagen</h2>
+  <table id="kookdagen">
+    <thead>
+      <tr>
+        <th>Dag</th>
+        <th>Kok</th>
+        <th>Gerecht</th>
+        <th>Acties</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <h1>Vakantieplanner</h1>
+  <h2>Activiteiten</h2>
+  <table id="activiteiten">
+    <thead>
+      <tr>
+        <th>Dag</th>
+        <th>Activiteit</th>
+        <th>Details</th>
+        <th>Acties</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-    <h2>Kookdagen</h2>
-    <table id="kookdagen-tabel">
-        <thead>
-            <tr>
-                <th>Dag</th>
-                <th>Kok</th>
-                <th>Gerecht</th>
-                <th>Actie</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+  <script>
+    function loadData() {
+      google.script.run.withSuccessHandler(displayKookdagen).getKookdagen();
+      google.script.run.withSuccessHandler(displayActiviteiten).getActiviteiten();
+    }
 
-    <h2>Activiteiten</h2>
-    <table id="activiteiten-tabel">
-        <thead>
-            <tr>
-                <th>Dag</th>
-                <th>Activiteit</th>
-                <th>Details</th>
-                <th>Actie</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    function displayKookdagen(data) {
+      const table = document.getElementById('kookdagen').getElementsByTagName('tbody')[0];
+      table.innerHTML = '';
+      data.forEach(function(row) {
+        const newRow = table.insertRow();
+        newRow.insertCell(0).innerText = row[0];
+        newRow.insertCell(1).innerText = row[1];
+        newRow.insertCell(2).innerText = row[2];
+        const button = document.createElement('button');
+        button.innerText = 'Inschrijven';
+        button.onclick = function() {
+          const kok = prompt(`Wie kookt op ${row[0]}?`);
+          const gerecht = prompt(`Wat wordt er gekookt op ${row[0]}?`);
+          google.script.run.updateKok(row[0], kok, gerecht);
+        };
+        newRow.insertCell(3).appendChild(button);
+      });
+    }
 
-    <!-- Firebase SDK via CDN -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js"></script>
+    function displayActiviteiten(data) {
+      const table = document.getElementById('activiteiten').getElementsByTagName('tbody')[0];
+      table.innerHTML = '';
+      data.forEach(function(row) {
+        const newRow = table.insertRow();
+        newRow.insertCell(0).innerText = row[0];
+        newRow.insertCell(1).innerText = row[1];
+        newRow.insertCell(2).innerText = row[2];
+        const button = document.createElement('button');
+        button.innerText = 'Inschrijven';
+        button.onclick = function() {
+          const activiteit = prompt(`Wat is de activiteit op ${row[0]}?`);
+          const details = prompt(`Wat zijn de details voor de activiteit op ${row[0]}?`);
+          google.script.run.updateActiviteit(row[0], activiteit, details);
+        };
+        newRow.insertCell(3).appendChild(button);
+      });
+    }
 
-    <!-- Eigen script.js -->
-    <script src="script.js"></script>
+    window.onload = loadData;
+  </script>
 </body>
 </html>
