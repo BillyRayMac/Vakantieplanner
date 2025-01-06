@@ -14,7 +14,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Kookdagen lijst
+// Kookdagen lijst (standaard)
 const kookdagen = [
     { dag: "Maandag", kok: "", gerecht: "" },
     { dag: "Dinsdag", kok: "", gerecht: "" },
@@ -25,7 +25,7 @@ const kookdagen = [
     { dag: "Zondag", kok: "", gerecht: "" },
 ];
 
-// Activiteiten lijst
+// Activiteiten lijst (standaard)
 const activiteiten = [
     { dag: "Maandag", activiteit: "", details: "" },
     { dag: "Dinsdag", activiteit: "", details: "" },
@@ -46,11 +46,13 @@ function updateKookdagen() {
         const dagCel = row.insertCell(0);
         const kokCel = row.insertCell(1);
         const gerechtCel = row.insertCell(2);
+        const actieCel = row.insertCell(3);
 
         dagCel.innerText = item.dag;
         kokCel.innerText = item.kok || "Klik om in te schrijven";
         gerechtCel.innerText = item.gerecht || "Klik om in te schrijven";
-        
+        actieCel.innerHTML = "<button>Inschrijven</button>";
+
         row.onclick = () => {
             const nieuweKok = prompt(`Wie kookt op ${item.dag}?`);
             if (nieuweKok) {
@@ -76,10 +78,12 @@ function updateActiviteiten() {
         const dagCel = row.insertCell(0);
         const activiteitCel = row.insertCell(1);
         const detailsCel = row.insertCell(2);
+        const actieCel = row.insertCell(3);
 
         dagCel.innerText = item.dag;
         activiteitCel.innerText = item.activiteit || "Klik om in te schrijven";
         detailsCel.innerText = item.details || "Klik om in te schrijven";
+        actieCel.innerHTML = "<button>Inschrijven</button>";
 
         row.onclick = () => {
             const nieuweActiviteit = prompt(`Welke activiteit is er op ${item.dag}?`);
