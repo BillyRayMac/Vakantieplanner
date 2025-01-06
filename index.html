@@ -1,36 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vakantieplanner</title>
     <style>
-        /* Basis layout voor de app */
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-
         h1 {
             text-align: center;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-
         th, td {
             padding: 10px;
             border: 1px solid #ddd;
             text-align: left;
         }
-
         th {
             background-color: #f4f4f4;
         }
-
         button {
             background-color: #4CAF50;
             color: white;
@@ -38,13 +32,8 @@
             padding: 10px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #45a049;
-        }
-
-        .tabel-container {
-            margin-bottom: 30px;
         }
     </style>
 </head>
@@ -52,43 +41,37 @@
 
     <h1>Vakantieplanner</h1>
 
-    <!-- Kookdagen Tabel -->
-    <div class="tabel-container">
-        <h2>Kookdagen</h2>
-        <table id="kookdagen-tabel">
-            <thead>
-                <tr>
-                    <th>Dag</th>
-                    <th>Kok</th>
-                    <th>Gerecht</th>
-                    <th>Actie</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <h2>Kookdagen</h2>
+    <table id="kookdagen-tabel">
+        <thead>
+            <tr>
+                <th>Dag</th>
+                <th>Kok</th>
+                <th>Gerecht</th>
+                <th>Actie</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
-    <!-- Activiteiten Tabel -->
-    <div class="tabel-container">
-        <h2>Activiteiten</h2>
-        <table id="activiteiten-tabel">
-            <thead>
-                <tr>
-                    <th>Dag</th>
-                    <th>Activiteit</th>
-                    <th>Details Activiteit</th>
-                    <th>Actie</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <h2>Activiteiten</h2>
+    <table id="activiteiten-tabel">
+        <thead>
+            <tr>
+                <th>Dag</th>
+                <th>Activiteit</th>
+                <th>Details</th>
+                <th>Actie</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
 
     <!-- Firebase SDK via CDN -->
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-database.js"></script>
 
     <!-- Eigen script.js -->
-    <script src="js/script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
