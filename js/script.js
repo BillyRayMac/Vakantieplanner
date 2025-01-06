@@ -1,20 +1,20 @@
-// Firebase configuratie
+// Firebase-configuratie
 const firebaseConfig = {
-    apiKey: "AIzaSyBV0QbK7I_8Gct3PEexjn_8mn-AHPlPjFM",
-    authDomain: "vakantieplanner-8e47e.firebaseapp.com",
-    databaseURL: "https://vakantieplanner-8e47e-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "vakantieplanner-8e47e",
-    storageBucket: "vakantieplanner-8e47e.appspot.com",
-    messagingSenderId: "76259349044",
-    appId: "1:76259349044:web:5316a95a0a1a0b9f0ef061",
-    measurementId: "G-DMHRYB6R26"
+    apiKey: "JOUW_API_KEY",
+    authDomain: "JOUW_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://JOUW_PROJECT_ID.firebaseio.com",
+    projectId: "JOUW_PROJECT_ID",
+    storageBucket: "JOUW_PROJECT_ID.appspot.com",
+    messagingSenderId: "JOUW_MESSAGING_SENDER_ID",
+    appId: "JOUW_APP_ID",
+    measurementId: "JOUW_MEASUREMENT_ID"
 };
 
-// Firebase initialiseren
-firebase.initializeApp(firebaseConfig);
+// Initialiseer Firebase
+const app = firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Kookdagen lijst (standaard)
+// Standaard kookdagen en activiteiten
 const kookdagen = [
     { dag: "Maandag", kok: "", gerecht: "" },
     { dag: "Dinsdag", kok: "", gerecht: "" },
@@ -22,10 +22,9 @@ const kookdagen = [
     { dag: "Donderdag", kok: "", gerecht: "" },
     { dag: "Vrijdag", kok: "", gerecht: "" },
     { dag: "Zaterdag", kok: "", gerecht: "" },
-    { dag: "Zondag", kok: "", gerecht: "" },
+    { dag: "Zondag", kok: "", gerecht: "" }
 ];
 
-// Activiteiten lijst (standaard)
 const activiteiten = [
     { dag: "Maandag", activiteit: "", details: "" },
     { dag: "Dinsdag", activiteit: "", details: "" },
@@ -33,93 +32,79 @@ const activiteiten = [
     { dag: "Donderdag", activiteit: "", details: "" },
     { dag: "Vrijdag", activiteit: "", details: "" },
     { dag: "Zaterdag", activiteit: "", details: "" },
-    { dag: "Zondag", activiteit: "", details: "" },
+    { dag: "Zondag", activiteit: "", details: "" }
 ];
 
-// Kookdagen updaten
-function updateKookdagen() {
+// Functie om kookdagen en activiteiten te updaten in de Firebase-database
+function updateDatabase() {
+    firebase.database().ref("kookdagen").set(kookdagen);
+    firebase.database().ref("activiteiten").set(activiteiten);
+}
+
+// Kookdagen en activiteiten updaten op de pagina
+function updateTables() {
     const kookdagenTabel = document.getElementById("kookdagen-tabel").getElementsByTagName("tbody")[0];
     kookdagenTabel.innerHTML = "";
-
     kookdagen.forEach((item) => {
         const row = kookdagenTabel.insertRow();
-        const dagCel = row.insertCell(0);
-        const kokCel = row.insertCell(1);
-        const gerechtCel = row.insertCell(2);
-        const actieCel = row.insertCell(3);
-
-        dagCel.innerText = item.dag;
-        kokCel.innerText = item.kok || "Klik om in te schrijven";
-        gerechtCel.innerText = item.gerecht || "Klik om in te schrijven";
-        actieCel.innerHTML = "<button>Inschrijven</button>";
-
-        row.onclick = () => {
+        row.insertCell(0).innerText = item.dag;
+        row.insertCell(1).innerText = item.kok || "Klik om in te schrijven";
+        row.insertCell(2).innerText = item.gerecht || "Klik om in te schrijven";
+        const actieCell = row.insertCell(3);
+        actieCell.innerHTML = "<button>Inschrijven</button>";
+        actieCell.onclick = () => {
             const nieuweKok = prompt(`Wie kookt op ${item.dag}?`);
             if (nieuweKok) {
                 item.kok = nieuweKok;
                 const gerecht = prompt(`Wat wordt er gekookt op ${item.dag}?`);
                 if (gerecht) {
                     item.gerecht = gerecht;
-                    firebase.database().ref("kookdagen").set(kookdagen);
-                    updateKookdagen();
+                    updateDatabase();
+                    updateTables();
                 }
             }
         };
     });
-}
 
-// Activiteiten updaten
-function updateActiviteiten() {
     const activiteitenTabel = document.getElementById("activiteiten-tabel").getElementsByTagName("tbody")[0];
     activiteitenTabel.innerHTML = "";
-
     activiteiten.forEach((item) => {
         const row = activiteitenTabel.insertRow();
-        const dagCel = row.insertCell(0);
-        const activiteitCel = row.insertCell(1);
-        const detailsCel = row.insertCell(2);
-        const actieCel = row.insertCell(3);
-
-        dagCel.innerText = item.dag;
-        activiteitCel.innerText = item.activiteit || "Klik om in te schrijven";
-        detailsCel.innerText = item.details || "Klik om in te schrijven";
-        actieCel.innerHTML = "<button>Inschrijven</button>";
-
-        row.onclick = () => {
-            const nieuweActiviteit = prompt(`Welke activiteit is er op ${item.dag}?`);
+        row.insertCell(0).innerText = item.dag;
+        row.insertCell(1).innerText = item.activiteit || "Klik om in te schrijven";
+        row.insertCell(2).innerText = item.details || "Klik om in te schrijven";
+        const actieCell = row.insertCell(3);
+        actieCell.innerHTML = "<button>Inschrijven</button>";
+        actieCell.onclick = () => {
+            const nieuweActiviteit = prompt(`Wat is de activiteit op ${item.dag}?`);
             if (nieuweActiviteit) {
                 item.activiteit = nieuweActiviteit;
-                const details = prompt(`Wat is de detailinformatie voor de activiteit op ${item.dag}?`);
+                const details = prompt(`Wat zijn de details voor de activiteit op ${item.dag}?`);
                 if (details) {
                     item.details = details;
-                    firebase.database().ref("activiteiten").set(activiteiten);
-                    updateActiviteiten();
+                    updateDatabase();
+                    updateTables();
                 }
             }
         };
     });
 }
 
-// Firebase-data ophalen en weergeven voor kookdagen
-firebase.database().ref("kookdagen").on("value", (snapshot) => {
-    if (snapshot.exists()) {
-        const data = snapshot.val();
-        kookdagen.splice(0, kookdagen.length, ...data);
-    }
-    updateKookdagen();
-});
-
-// Firebase-data ophalen en weergeven voor activiteiten
-firebase.database().ref("activiteiten").on("value", (snapshot) => {
-    if (snapshot.exists()) {
-        const data = snapshot.val();
-        activiteiten.splice(0, activiteiten.length, ...data);
-    }
-    updateActiviteiten();
-});
-
-// Start de applicatie
+// Fetch data from Firebase on load
 window.onload = () => {
-    updateKookdagen();
-    updateActiviteiten();
+    firebase.database().ref("kookdagen").on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            kookdagen.splice(0, kookdagen.length, ...data);
+        }
+        updateTables();
+    });
+
+    firebase.database().ref("activiteiten").on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            activiteiten.splice(0, activiteiten.length, ...data);
+        }
+        updateTables();
+    });
 };
