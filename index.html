@@ -4,44 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vakantieplanner</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        tbody tr:hover {
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Vakantieplanner</h1>
-    <table id="kookdagen-tabel">
-        <thead>
-            <tr>
-                <th>Dag</th>
-                <th>Kok</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <header>
+        <h1>Vakantieplanner</h1>
+    </header>
+    <main>
+        <section id="kookrooster">
+            <h2>Kookrooster</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dag</th>
+                        <th>Kok</th>
+                    </tr>
+                </thead>
+                <tbody id="kookdagen">
+                    <!-- Dynamisch gegenereerde rijen -->
+                </tbody>
+            </table>
+        </section>
+        <section id="activiteiten">
+            <h2>Activiteitenplanning</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dag</th>
+                        <th>Activiteit</th>
+                    </tr>
+                </thead>
+                <tbody id="activiteitendagen">
+                    <!-- Dynamisch gegenereerde rijen -->
+                </tbody>
+            </table>
 
     <!-- Firebase scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js"></script>
