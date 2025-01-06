@@ -11,7 +11,7 @@ const firebaseConfig = {
 };
 
 // Firebase initialiseren
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // Kookdagen lijst
