@@ -108,3 +108,26 @@ window.onload = () => {
         updateTables();
     });
 };
+window.onload = () => {
+    firebase.database().ref("kookdagen").on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            console.log("Kookdagen geladen:", data); // Check of data goed binnenkomt
+            kookdagen.splice(0, kookdagen.length, ...data);
+        } else {
+            console.log("Geen kookdagen gevonden.");
+        }
+        updateTables();
+    });
+
+    firebase.database().ref("activiteiten").on("value", (snapshot) => {
+        if (snapshot.exists()) {
+            const data = snapshot.val();
+            console.log("Activiteiten geladen:", data); // Check of data goed binnenkomt
+            activiteiten.splice(0, activiteiten.length, ...data);
+        } else {
+            console.log("Geen activiteiten gevonden.");
+        }
+        updateTables();
+    });
+};
